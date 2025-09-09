@@ -12,6 +12,7 @@ import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FormLabel from '@mui/material/FormLabel';
+import { signIn } from 'next-auth/react';
 
 /**
  * Form Validation Schema
@@ -42,7 +43,46 @@ function SignInPageForm() {
 
 	const { isValid, dirtyFields, errors } = formState;
 
-	function onSubmit() {
+	async function onSubmit(formData: FormType) {
+		console.log('🔐 SignInPageForm - Starting authentication with:', { 
+			email: formData.email, 
+			passwordLength: formData.password?.length || 0 
+		});
+		
+		// Show popup notification
+		alert(`🔄 Attempting login with email: ${formData.email}`);
+		
+		try {
+			const result = await signIn('credentials', {
+				email: formData.email,
+				password: formData.password,
+				formType: 'signin',
+				redirect: false
+			});
+
+			console.log('🔐 SignInPageForm - Authentication result:', result);
+
+			if (result?.error) {
+				console.error('❌ SignInPageForm - Authentication failed:', result.error);
+				alert(`❌ Login failed: ${result.error}`);
+				return false;
+			}
+
+			if (result?.ok) {
+				console.log('✅ SignInPageForm - Authentication successful!');
+				alert('✅ Login successful! Redirecting...');
+				window.location.href = '/';
+				return true;
+			}
+
+			console.warn('⚠️ SignInPageForm - Unexpected result:', result);
+			alert('⚠️ Unexpected authentication result');
+			
+		} catch (error) {
+			console.error('💥 SignInPageForm - Exception during authentication:', error);
+			alert(`💥 Authentication error: ${error.message}`);
+		}
+		
 		reset(defaultValues);
 	}
 

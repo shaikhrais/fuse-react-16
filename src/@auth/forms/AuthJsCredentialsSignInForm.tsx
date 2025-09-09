@@ -43,32 +43,62 @@ function AuthJsCredentialsSignInForm() {
 	const { isValid, dirtyFields, errors } = formState;
 
 	useEffect(() => {
-		setValue('email', 'admin@fusetheme.com', {
+		// Pre-fill with demo values for testing - you can remove this
+		setValue('email', 'test@example.com', {
 			shouldDirty: true,
 			shouldValidate: true
 		});
-		setValue('password', '5;4+0IOx:\\Dy', {
+		setValue('password', 'password123', {
 			shouldDirty: true,
 			shouldValidate: true
 		});
+		
+		console.log('🔐 AuthJsCredentialsSignInForm - Pre-filled with demo credentials');
 	}, [setValue]);
 
 	async function onSubmit(formData: FormType) {
 		const { email, password } = formData;
 
-		const result = await signIn('credentials', {
-			email,
-			password,
-			formType: 'signin',
-			redirect: false
+		console.log('🔐 AuthJsCredentialsSignInForm - Starting authentication with:', { 
+			email, 
+			passwordLength: password?.length || 0 
 		});
+		
+		// Show popup notification
+		alert(`🔄 AuthJsCredentialsSignInForm - Attempting login with email: ${email}`);
 
-		if (result?.error) {
-			setError('root', { type: 'manual', message: signinErrors[result.error] });
+		try {
+			const result = await signIn('credentials', {
+				email,
+				password,
+				formType: 'signin',
+				redirect: false
+			});
+
+			console.log('🔐 AuthJsCredentialsSignInForm - Authentication result:', result);
+
+			if (result?.error) {
+				console.error('❌ AuthJsCredentialsSignInForm - Authentication failed:', result.error);
+				alert(`❌ AuthJsCredentialsSignInForm - Login failed: ${signinErrors[result.error] || result.error}`);
+				setError('root', { type: 'manual', message: signinErrors[result.error] });
+				return false;
+			}
+
+			if (result?.ok) {
+				console.log('✅ AuthJsCredentialsSignInForm - Authentication successful!');
+				alert('✅ AuthJsCredentialsSignInForm - Login successful!');
+				return true;
+			}
+
+			console.warn('⚠️ AuthJsCredentialsSignInForm - Unexpected result:', result);
+			alert('⚠️ AuthJsCredentialsSignInForm - Unexpected authentication result');
+			return false;
+			
+		} catch (error) {
+			console.error('💥 AuthJsCredentialsSignInForm - Exception during authentication:', error);
+			alert(`💥 AuthJsCredentialsSignInForm - Authentication error: ${error.message}`);
 			return false;
 		}
-
-		return true;
 	}
 
 	return (

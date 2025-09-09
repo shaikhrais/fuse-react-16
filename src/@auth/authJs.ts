@@ -24,6 +24,13 @@ const storage = createStorage({
 export const providers: Provider[] = [
 	Credentials({
 		authorize(formInput) {
+			console.log('🔐 AUTHJS - Starting authorization with formInput:', {
+				formType: formInput.formType,
+				email: formInput.email,
+				passwordLength: formInput.password?.length || 0,
+				hasDisplayName: !!formInput.displayName
+			});
+
 			/**
 			 * !! This is just for demonstration purposes
 			 * You can create your own validation logic here
@@ -31,29 +38,52 @@ export const providers: Provider[] = [
 			 */
 
 			/**
-			 * Sign in
+			 * Sign in - Now accepts any email with non-empty password
 			 */
 			if (formInput.formType === 'signin') {
-				if (formInput.password === '' || formInput.email !== 'admin@fusetheme.com') {
+				console.log('🔐 AUTHJS - Processing SIGNIN for email:', formInput.email);
+				
+				if (!formInput.password || formInput.password === '') {
+					console.error('❌ AUTHJS - SIGNIN failed: Empty password');
 					return null;
 				}
+				
+				if (!formInput.email || formInput.email === '') {
+					console.error('❌ AUTHJS - SIGNIN failed: Empty email');
+					return null;
+				}
+				
+				console.log('✅ AUTHJS - SIGNIN successful for email:', formInput.email);
 			}
 
 			/**
 			 * Sign up
 			 */
 			if (formInput.formType === 'signup') {
-				if (formInput.password === '' || formInput.email === '') {
+				console.log('🔐 AUTHJS - Processing SIGNUP for email:', formInput.email);
+				
+				if (!formInput.password || formInput.password === '') {
+					console.error('❌ AUTHJS - SIGNUP failed: Empty password');
 					return null;
 				}
+				
+				if (!formInput.email || formInput.email === '') {
+					console.error('❌ AUTHJS - SIGNUP failed: Empty email');
+					return null;
+				}
+				
+				console.log('✅ AUTHJS - SIGNUP successful for email:', formInput.email);
 			}
 
 			/**
 			 * Response Success with email
 			 */
-			return {
+			const successResult = {
 				email: formInput?.email as string
 			};
+			
+			console.log('🎉 AUTHJS - Authorization successful, returning:', successResult);
+			return successResult;
 		}
 	}),
 	Google,
