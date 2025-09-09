@@ -1,0 +1,31 @@
+{
+  "name": "@fuse/light-api",
+  "version": "1.0.0",
+  "description": "SQLite-based alternative to Mock API for Fuse React project",
+  "main": "light-api.js",
+  "bin": {
+    "lightapi": "./cli.js"
+  },
+  "scripts": {
+    "start": "node cli.js serve",
+    "import": "node cli.js import-all",
+    "status": "node cli.js status",
+    "help": "node cli.js help"
+  },
+  "dependencies": {
+    "better-sqlite3": "^8.7.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "node-fetch": "^2.7.0"
+  },
+  "keywords": [
+    "sqlite",
+    "api",
+    "mock",
+    "database",
+    "express",
+    "fuse"
+  ],
+  "author": "Fuse Theme",
+  "license": "MIT"
+}
