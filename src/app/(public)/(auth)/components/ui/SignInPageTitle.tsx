@@ -20,6 +20,11 @@ function SignInPageTitle() {
 					Sign up
 				</Link>
 			</div>
+			<div className="mt-2">
+				<Typography className="text-xs text-gray-500">
+					v16.0.0 - 2025.09.10
+				</Typography>
+			</div>
 		</div>
 	);
 }

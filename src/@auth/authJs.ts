@@ -27,7 +27,7 @@ export const providers: Provider[] = [
 			console.log('🔐 AUTHJS - Starting authorization with formInput:', {
 				formType: formInput.formType,
 				email: formInput.email,
-				passwordLength: formInput.password?.length || 0,
+				passwordLength: typeof formInput.password === 'string' ? formInput.password.length : 0,
 				hasDisplayName: !!formInput.displayName
 			});
 
